@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mydogsid/widgets/show_flushbar.dart';
-
 import 'common/config/general.dart';
 
 class WebView extends StatefulWidget {
@@ -96,12 +95,14 @@ class _WebViewState extends State<WebView> {
             title: appName,
             home: Scaffold(
               appBar: AppBar(
-                leading: GestureDetector(
-                  child: Icon(Icons.arrow_back),
-                  onTap: () {
-                    webView.goBack();
-                  },
-                ),
+                leading: canGoBack
+                    ? GestureDetector(
+                        child: Icon(Icons.arrow_back),
+                        onTap: () async {
+                          webView.goBack();
+                        },
+                      )
+                    : null,
                 title: Row(
                   children: [
                     Container(
@@ -137,6 +138,7 @@ class _WebViewState extends State<WebView> {
                         },
                         onLoadStart: (InAppWebViewController controller,
                             String url) async {
+                          canGoBack = await webView.canGoBack();
                           setState(() {
                             this.url = url;
                           });
